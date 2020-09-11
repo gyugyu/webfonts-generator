@@ -1,27 +1,46 @@
-import FontGenerator from './generator/FontGenerator'
-import FromTTFGenerator from './generator/FromTTFGenerator'
+import FontGenerator, { GeneratedFont } from './generator/FontGenerator'
+import FromTTFGenerator, { GeneratorType as FromTTFGeneratorType } from './generator/FromTTFGenerator'
 import SVGGenerator from './generator/SVGGenerator'
 import TTFGenerator from './generator/TTFGenerator'
+import { Options, CodePoints } from './index'
 
 class FontSetGenerator {
-  generators: FontGenerator<string | Buffer>[]
+  generators: FontGenerator[]
 
-  constructor(generators: FontGenerator<string | Buffer>[]) {
-    this.generators = generators
+  constructor() {
+    this.generators = []
   }
 
   async generate() {
-    await Promise.all(this.generators.map(g => g.init()))
-    await Promise.all(this.generators.map(g => g.generate()))
+    for (const generator of this.generators) {
+      await generator.init()
+    }
+    return await this.generators.reduce<Promise<GeneratedFont[]>>(async (chain, generator) => {
+      const pre = await chain
+      const cur = await generator.generate()
+      return pre.concat(cur)
+    }, Promise.resolve([]))
   }
 }
 
-export default function buildFontSetGenerator() {
-  const svgGenerator = new SVGGenerator()
-  const ttfGenerator = new TTFGenerator(svgGenerator)
-  return new FontSetGenerator([
-    new FromTTFGenerator('eot', ttfGenerator),
-    new FromTTFGenerator('woff', ttfGenerator),
-    new FromTTFGenerator('woff2', ttfGenerator),
-  ])
+export default function buildFontSetGenerator(options: Options, codePoints: CodePoints) {
+  const generator = new FontSetGenerator()
+
+  const svgGenerator = new SVGGenerator(options, codePoints)
+  if (options.types.includes('svg')) {
+    generator.generators.push(svgGenerator)
+  }
+
+  const ttfGenerator = new TTFGenerator(options, svgGenerator)
+  if (options.types.includes('ttf')) {
+    generator.generators.push(ttfGenerator)
+  }
+
+  options.types
+    .filter((type): type is FromTTFGeneratorType => ['eot', 'woff', 'woff2'].includes(type))
+    .forEach(type => {
+      generator.generators.push(new FromTTFGenerator(options, type, ttfGenerator))
+    })
+
+  return generator
 }
