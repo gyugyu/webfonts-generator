@@ -75,4 +75,5 @@ typings/
 .serverless
 
 lib/
+dest/
 package-lock.json

@@ -5,13 +5,11 @@ import path from 'path'
 import { GeneratorOptions } from './generator/FontGenerator'
 
 export interface Options extends GeneratorOptions {
-  css: boolean
   startCodePoint: number
 }
 
 const defaultOptions: Options = {
   fontName: 'iconfont',
-  css: true,
   types: ['eot', 'woff', 'woff2'],
   startCodePoint: 0xF101,
 }
@@ -27,13 +25,29 @@ function generateCodePoints(files: string[], codePoint: number): CodePoints {
   }, {})
 }
 
+export function buildManifest(options: Options, codePoints: CodePoints) {
+  return {
+    fontFamily: options.fontName,
+    src: options.types.map(type => `${options.fontName}.${type}`),
+    codePoints: Object.keys(codePoints).reduce<Record<string, number>>((pre, file) => {
+      const codePoint = codePoints[file]
+      return { ...pre, [codePoint.name]: codePoint.codePoint }
+    }, {})
+  }
+}
+
 export default async function index(files: string[], dest: string, options: Partial<Options> = {}) {
-  const mergedOptions = { ...defaultOptions, options }
+  const mergedOptions: Options = { ...defaultOptions, ...options }
   const codePoints = generateCodePoints(files, mergedOptions.startCodePoint)
+
   const generator = buildFontSetGenerator(mergedOptions, codePoints)
   const fonts = await generator.generate()
   fonts.forEach(font => {
     mkdirp.sync(dest)
     fs.writeFileSync(path.join(dest, `${options.fontName}.${font.type}`), font.data)
   })
+
+  const manifest = buildManifest(mergedOptions, codePoints)
+  mkdirp.sync(dest)
+  fs.writeFileSync(path.join(dest, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8')
 }
