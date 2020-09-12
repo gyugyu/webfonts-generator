@@ -25,7 +25,7 @@ function generateCodePoints(files: string[], codePoint: number): CodePoints {
   }, {})
 }
 
-export function buildManifest(options: Options, codePoints: CodePoints) {
+function buildManifest(options: Options, codePoints: CodePoints) {
   return {
     fontFamily: options.fontName,
     src: options.types.map(type => `${options.fontName}.${type}`),
