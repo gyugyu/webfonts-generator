@@ -1,7 +1,7 @@
 {
-  "name": "webfonts-generator",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@gyugyu/webfonts-generator",
+  "version": "0.1.0",
+  "description": "Webfonts generator CLI",
   "main": "lib/index.js",
   "files": [
     "bin",
@@ -18,8 +18,15 @@
     "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "font",
+    "webfont",
+    "svg",
+    "ttf",
+    "woff",
+    "woff2"
+  ],
+  "author": "Yusuke Yagyu <gyugyu@pepabo.com>",
   "license": "MIT",
   "dependencies": {
     "commander": "^6.1.0",

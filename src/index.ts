@@ -28,7 +28,9 @@ function generateCodePoints(files: string[], codePoint: number): CodePoints {
 function buildManifest(options: Options, codePoints: CodePoints) {
   return {
     fontFamily: options.fontName,
-    src: options.types.map(type => `${options.fontName}.${type}`),
+    src: options.types.reduce<Record<string, string>>((pre, type) => {
+      return { ...pre, [type]: `${options.fontName}.${type}` }
+    }, {}),
     codePoints: Object.keys(codePoints).reduce<Record<string, number>>((pre, file) => {
       const codePoint = codePoints[file]
       return { ...pre, [codePoint.name]: codePoint.codePoint }
