@@ -1,5 +1,4 @@
 import { GeneratorType as FromTTFGeneratorType } from './FromTTFGenerator'
-import { Options } from '../index'
 
 export type GeneratorType = 'svg' | 'ttf' | FromTTFGeneratorType
 
