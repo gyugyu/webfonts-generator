@@ -13,7 +13,7 @@ const defaultOptions: Omit<Options, 'fontName'> = {
 
 function generateFileRefs(files: string[], codePoint: number, fileRefs: FileRefs = {}): FileRefs {
   codePoint = Object.values(fileRefs)
-    .reduce((pre, { codePoint: cur }) => cur > pre ? cur : pre, codePoint)
+    .reduce((pre, { codePoint: cur }) => cur >= pre ? cur + 1 : pre, codePoint)
 
   return files.reduce<FileRefs>((pre, file) => {
     const name = path.basename(file, path.extname(file))
