@@ -1,8 +1,12 @@
-import FontGenerator, { GeneratedFont } from './generator/FontGenerator'
+import FontGenerator, { GeneratedFont, GeneratorOptions } from './generator/FontGenerator'
 import FromTTFGenerator, { GeneratorType as FromTTFGeneratorType } from './generator/FromTTFGenerator'
 import SVGGenerator from './generator/SVGGenerator'
 import TTFGenerator from './generator/TTFGenerator'
-import { Options, CodePoints } from './index'
+import { FileRefs } from './CheckPoint'
+
+export interface Options extends GeneratorOptions {
+  startCodePoint: number
+}
 
 class FontSetGenerator {
   generators: FontGenerator[]
@@ -23,10 +27,10 @@ class FontSetGenerator {
   }
 }
 
-export default function buildFontSetGenerator(options: Options, codePoints: CodePoints) {
+export default function buildFontSetGenerator(options: Options, fileRefs: FileRefs) {
   const generator = new FontSetGenerator()
 
-  const svgGenerator = new SVGGenerator(options, codePoints)
+  const svgGenerator = new SVGGenerator(options, fileRefs)
   if (options.types.includes('svg')) {
     generator.generators.push(svgGenerator)
   }

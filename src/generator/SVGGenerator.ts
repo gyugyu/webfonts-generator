@@ -1,7 +1,7 @@
 import fs from 'fs'
 import SVGIcons2SVGFontStream from 'svgicons2svgfont'
 import FontGenerator, { GeneratorOptions } from './FontGenerator'
-import { CodePoints } from '../index'
+import { FileRefs } from '../CheckPoint'
 
 type SVGIconStream = fs.ReadStream & {
   metadata: {
@@ -11,12 +11,12 @@ type SVGIconStream = fs.ReadStream & {
 }
 
 export default class SVGGenerator extends FontGenerator {
-  codePoints: CodePoints
+  fileRefs: FileRefs
   font?: Buffer
 
-  constructor(options: GeneratorOptions, codePoints: CodePoints) {
+  constructor(options: GeneratorOptions, fileRefs: FileRefs) {
     super(options)
-    this.codePoints = codePoints
+    this.fileRefs = fileRefs
   }
 
   async init() { }
@@ -41,9 +41,9 @@ export default class SVGGenerator extends FontGenerator {
           resolve({ type: 'svg', data: buffer })
         })
 
-      Object.keys(this.codePoints).forEach(file => {
+      Object.keys(this.fileRefs).forEach(file => {
         const glyph: SVGIconStream = fs.createReadStream(file) as SVGIconStream
-        const { name, codePoint } = this.codePoints[file]
+        const { name, codePoint } = this.fileRefs[file]
 
         const ligature = name.split('').map((_, i) => {
           return String.fromCharCode(name.charCodeAt(i))

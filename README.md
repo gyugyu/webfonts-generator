@@ -10,8 +10,15 @@ npm install -g @gyugyu/webfonts-generator
 
 ## Usage
 
+Put YAML to `path/to/fonts-dir/fontspec.yaml` .
+
+```yaml
+name: myicons
+dest: ../dest
+```
+
 ```bash
-generate-webfonts path/to/fonts/*.svg --font-name myicons --dest dest
+generate-webfonts path/to/fonts-dir
 ```
 
 For more information, see `generate-webfonts --help` .
