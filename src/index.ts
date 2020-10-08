@@ -45,14 +45,14 @@ export default async function index(root: string, options: Partial<Options> = {}
   const spec = loadFontSpec(root)
   const dest = path.join(root, spec.dest)
   const checkPoint = loadCheckPoint(root)
-  const mergedOptions: Options = { ...defaultOptions, fontName: spec.name }
+  const mergedOptions: Options = { ...defaultOptions, ...options, fontName: spec.name }
   const fileRefs = generateFileRefs(files, mergedOptions.startCodePoint, checkPoint?.fileRefs)
 
   const generator = buildFontSetGenerator(mergedOptions, fileRefs)
   const fonts = await generator.generate()
   fonts.forEach(font => {
     mkdirp.sync(dest)
-    fs.writeFileSync(path.join(dest, `${options.fontName}.${font.type}`), font.data)
+    fs.writeFileSync(path.join(dest, `${mergedOptions.fontName}.${font.type}`), font.data)
   })
 
   const manifest = buildManifest(mergedOptions, fileRefs)
