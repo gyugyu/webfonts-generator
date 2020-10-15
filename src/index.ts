@@ -1,3 +1,4 @@
+import { option } from 'commander'
 import fs from 'fs'
 import glob from 'glob'
 import mkdirp from 'mkdirp'
@@ -6,22 +7,24 @@ import buildFontSetGenerator, { Options } from './buildFontSetGenerator'
 import { loadCheckPoint, saveCheckPoint, FileRefs } from './CheckPoint'
 import { loadFontSpec } from './FontSpec'
 
-const defaultOptions: Omit<Options, 'fontName'> = {
+const defaultOptions: Omit<Options, 'fontName' | 'root'> = {
   types: ['eot', 'woff', 'woff2'],
   startCodePoint: 0xF101,
 }
 
-function generateFileRefs(files: string[], codePoint: number, fileRefs: FileRefs = {}): FileRefs {
-  codePoint = Object.values(fileRefs)
-    .reduce((pre, { codePoint: cur }) => cur >= pre ? cur + 1 : pre, codePoint)
+function generateFileRefs(files: string[], options: Options, fileRefs: FileRefs = {}): FileRefs {
+  const { startCodePoint, root } = options
+  let codePoint = Object.values(fileRefs)
+    .reduce((pre, { codePoint: cur }) => cur >= pre ? cur + 1 : pre, startCodePoint)
 
   return files.reduce<FileRefs>((pre, file) => {
+    const relative = path.relative(root, file)
     const name = path.basename(file, path.extname(file))
-    const ref = fileRefs[file]
+    const ref = fileRefs[relative]
     if (ref) {
-      return { ...pre, [file]: ref }
+      return { ...pre, [relative]: ref }
     }
-    const cur = { [file]: { name, codePoint } }
+    const cur = { [relative]: { name, codePoint } }
     codePoint++
     return { ...pre, ...cur }
   }, {})
@@ -45,8 +48,8 @@ export default async function index(root: string, options: Partial<Options> = {}
   const spec = loadFontSpec(root)
   const dest = path.join(root, spec.dest)
   const checkPoint = loadCheckPoint(root)
-  const mergedOptions: Options = { ...defaultOptions, ...options, fontName: spec.name }
-  const fileRefs = generateFileRefs(files, mergedOptions.startCodePoint, checkPoint?.fileRefs)
+  const mergedOptions: Options = { ...defaultOptions, ...options, root, fontName: spec.name }
+  const fileRefs = generateFileRefs(files, mergedOptions, checkPoint?.fileRefs)
 
   const generator = buildFontSetGenerator(mergedOptions, fileRefs)
   const fonts = await generator.generate()

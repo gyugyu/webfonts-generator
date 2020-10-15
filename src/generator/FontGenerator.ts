@@ -5,9 +5,10 @@ export type GeneratorType = 'svg' | 'ttf' | FromTTFGeneratorType
 export interface GeneratorOptions {
   fontName: string
   types: GeneratorType[]
+  root: string
 }
 
-export type GeneratedFont = { type: string, data: Buffer}
+export type GeneratedFont = { type: string, data: Buffer }
 
 
 export default abstract class FontGenerator {
