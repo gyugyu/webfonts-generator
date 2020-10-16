@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import SVGIcons2SVGFontStream from 'svgicons2svgfont'
 import FontGenerator, { GeneratorOptions } from './FontGenerator'
 import { FileRefs } from '../CheckPoint'
@@ -42,7 +43,7 @@ export default class SVGGenerator extends FontGenerator {
         })
 
       Object.keys(this.fileRefs).forEach(file => {
-        const glyph: SVGIconStream = fs.createReadStream(file) as SVGIconStream
+        const glyph: SVGIconStream = fs.createReadStream(path.join(this.options.root, file)) as SVGIconStream
         const { name, codePoint } = this.fileRefs[file]
 
         const ligature = name.split('').map((_, i) => {

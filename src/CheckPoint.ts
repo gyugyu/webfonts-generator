@@ -12,11 +12,19 @@ interface CheckPoint {
 
 export function loadCheckPoint(root: string): CheckPoint | null {
   const file = path.join(root, filename)
-  if (fs.existsSync(file)) {
-    const content = fs.readFileSync(path.join(root, filename), 'utf8')
-    return JSON.parse(content)
+  if (!fs.existsSync(file)) {
+    return null
   }
-  return null
+
+  const content = fs.readFileSync(path.join(root, filename), 'utf8')
+  const { version, fileRefs } = JSON.parse(content) as CheckPoint
+
+  const migratedFileRefs = Object.keys(fileRefs).reduce<FileRefs>((pre, file) => {
+    const relative = file.startsWith(`${root}/`) ? path.relative(root, file) : file
+      return { ...pre, [relative]: fileRefs[file] }
+  }, {})
+
+  return { version, fileRefs: migratedFileRefs }
 }
 
 const { version } = require('../package.json')
