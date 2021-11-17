@@ -29,7 +29,10 @@ export default class SVGGenerator extends FontGenerator {
 
     return await new Promise<{ type: 'svg', data: Buffer }>((resolve, reject) => {
       let buffer = Buffer.from('')
-      const fontStream = new SVGIcons2SVGFontStream({ fontName: this.options.fontName })
+      const fontStream = new SVGIcons2SVGFontStream({
+        fontName: this.options.fontName,
+        ...this.options.svg,
+      })
       fontStream
         .on('data', chunk => {
           buffer = Buffer.concat([buffer, chunk])

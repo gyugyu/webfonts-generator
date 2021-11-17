@@ -1,4 +1,3 @@
-import { option } from 'commander'
 import fs from 'fs'
 import glob from 'glob'
 import mkdirp from 'mkdirp'
@@ -48,7 +47,13 @@ export default async function index(root: string, options: Partial<Options> = {}
   const spec = loadFontSpec(root)
   const dest = path.join(root, spec.dest)
   const checkPoint = loadCheckPoint(root)
-  const mergedOptions: Options = { ...defaultOptions, ...options, root, fontName: spec.name }
+  const mergedOptions: Options = {
+    ...defaultOptions,
+    ...options,
+    root,
+    fontName: spec.name,
+    svg: spec.svg,
+  }
   const fileRefs = generateFileRefs(files, mergedOptions, checkPoint?.fileRefs)
 
   const generator = buildFontSetGenerator(mergedOptions, fileRefs)

@@ -6,6 +6,10 @@ export interface GeneratorOptions {
   fontName: string
   types: GeneratorType[]
   root: string
+  svg?: {
+    fontHeight?: number
+    normalize?: boolean
+  }
 }
 
 export type GeneratedFont = { type: string, data: Buffer }

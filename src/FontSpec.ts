@@ -1,12 +1,18 @@
 import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'
+import { GeneratorType } from './generator/FontGenerator'
 
 const filename = 'fontspec.yaml'
 
 interface FontSpec {
   name: string
   dest: string
+  types?: GeneratorType[]
+  svg?: {
+    fontHeight?: number
+    normalize?: boolean
+  }
 }
 
 function isFontSpec(o: any): o is FontSpec {
