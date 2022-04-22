@@ -29,7 +29,7 @@ export default class FromTTFGenerator extends FontGenerator {
       return { type: this.type, data: this.font }
     }
 
-    let mod: typeof ttf2woff2
+    let mod: (ttf: Buffer) => Buffer
     switch (this.type) {
       case 'eot':
         mod = ttf2eot

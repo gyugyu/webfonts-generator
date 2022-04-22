@@ -14,7 +14,6 @@ export interface GeneratorOptions {
 
 export type GeneratedFont = { type: string, data: Buffer }
 
-
 export default abstract class FontGenerator {
   options: GeneratorOptions
 
@@ -22,6 +21,6 @@ export default abstract class FontGenerator {
     this.options = options
   }
 
-  abstract async init(): Promise<void>
-  abstract async generate(): Promise<GeneratedFont>
+  abstract init(): Promise<void>
+  abstract generate(): Promise<GeneratedFont>
 }

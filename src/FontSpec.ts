@@ -21,7 +21,7 @@ function isFontSpec(o: any): o is FontSpec {
 
 export function loadFontSpec(root: string): FontSpec {
   const content = fs.readFileSync(path.join(root, filename), 'utf8')
-  const data = yaml.safeLoad(content)
+  const data = yaml.load(content)
   if (isFontSpec(data)) {
     return data
   }
