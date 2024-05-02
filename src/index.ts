@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { globSync } from 'glob'
-import mkdirp from 'mkdirp'
+import { mkdirp } from 'mkdirp'
 import path from 'path'
 import buildFontSetGenerator, { Options } from './buildFontSetGenerator'
 import { loadCheckPoint, saveCheckPoint, FileRefs } from './CheckPoint'
