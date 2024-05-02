@@ -1,5 +1,5 @@
 import fs from 'fs'
-import glob from 'glob'
+import { globSync } from 'glob'
 import mkdirp from 'mkdirp'
 import path from 'path'
 import buildFontSetGenerator, { Options } from './buildFontSetGenerator'
@@ -43,7 +43,7 @@ function buildManifest(options: Options, fileRefs: FileRefs) {
 }
 
 export default async function index(root: string, options: Partial<Options> = {}) {
-  const files = glob.sync(path.join(root, '*.svg'))
+  const files = globSync(path.join(root, '*.svg'))
   const spec = loadFontSpec(root)
   const dest = path.join(root, spec.dest)
   const checkPoint = loadCheckPoint(root)
