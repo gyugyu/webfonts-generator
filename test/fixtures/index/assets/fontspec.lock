@@ -1,0 +1,9 @@
+{
+  "fileRefs": {
+    "foo.svg": {
+      "name": "foo",
+      "codePoint": 61697
+    }
+  },
+  "version": "1.0.0-2"
+}

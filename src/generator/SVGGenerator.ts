@@ -11,6 +11,11 @@ type SVGIconStream = fs.ReadStream & {
   }
 }
 
+const defaultOptions = {
+  fontHeight: 1000,
+  normalize: true,
+}
+
 export default class SVGGenerator extends FontGenerator {
   fileRefs: FileRefs
   font?: Buffer
@@ -31,6 +36,7 @@ export default class SVGGenerator extends FontGenerator {
       let buffer = Buffer.from('')
       const fontStream = new SVGIcons2SVGFontStream({
         fontName: this.options.fontName,
+        ...defaultOptions,
         ...this.options.svg,
       })
       fontStream
